@@ -1,4 +1,4 @@
-let cacheName = 'v1'
+let cacheName = "v1";
 
 const urlList = [
   ".",
@@ -46,7 +46,7 @@ self.addEventListener("fetch", event => {
       return fetch(request).then(response => {
         const cloneResponse = response.clone();
         caches.open(cacheName).then(cache => cache.put(request, cloneResponse));
-        
+
         return response;
       });
     })
