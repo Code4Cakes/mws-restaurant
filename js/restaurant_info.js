@@ -69,7 +69,7 @@ fetchRestaurantFromURL = callback => {
 };
 
 /**
- * Create restaurant HTML and add it to the webpage
+ * Create restaurant HTML and add it to the jpgage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById("restaurant-name");
@@ -95,7 +95,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 };
 
 /**
- * Create restaurant operating hours HTML table and add it to the webpage.
+ * Create restaurant operating hours HTML table and add it to the jpgage.
  */
 fillRestaurantHoursHTML = (
   operatingHours = self.restaurant.operating_hours
@@ -117,7 +117,7 @@ fillRestaurantHoursHTML = (
 };
 
 /**
- * Create all reviews HTML and add them to the webpage.
+ * Create all reviews HTML and add them to the jpgage.
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById("reviews-container");
@@ -139,7 +139,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 };
 
 /**
- * Create review HTML and add it to the webpage.
+ * Create review HTML and add it to the jpgage.
  */
 createReviewHTML = review => {
   const li = document.createElement("article");
