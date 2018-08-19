@@ -34,7 +34,9 @@ const urlList = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(cacheName).then(cache => {
-      cache.addAll(urlList, { mode: 'no-cors' });
+      cache.addAll(urlList, { 
+        mode: 'no-cors'
+      });
     })
   );
 });
@@ -89,22 +91,3 @@ self.addEventListener('fetch', event => {
     );
   }
 });
-
-getRestaurants = () => {
-  let req = window.indexedDB.open('restaurantDB', 1);
-
-  req.onsuccess = e => {
-    let db = event.result;
-
-    let tx = db.transaction('restaurants');
-    let objStore = tx.objectStore('restaurants');
-    let getReq = objStore.getAll();
-
-    getReq.onerror(e => {
-      console.log(e);
-    });
-    getReq.oncomplete(e => {
-      return req.result;
-    });
-  };
-};
