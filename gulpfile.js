@@ -1,43 +1,63 @@
-const gulp = require('gulp');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const browserSync = require('browser-sync').create();
-const uglify = require('gulp-uglify');
-const babel = require('gulp-babel');
-const sourcemaps = require('gulp-sourcemaps');
+const gulp = require('gulp'),
+  sass = require('gulp-sass'),
+  postcss = require('gulp-postcss'),
+  autoprefixer = require('autoprefixer'),
+  browserSync = require('browser-sync').create(),
+  uglify = require('gulp-uglify'),
+  babel = require('gulp-babel'),
+  cssnano = require('cssnano'),
+  sourcemaps = require('gulp-sourcemaps');
 
-// browserSync.init({
-//   server: './'
-// });
-// browserSync.stream();
+let paths = {
+  styles: {
+    src: 'sass/**/*.scss',
+    dest: './css'
+  },
+  scripts: {
+    src: 'js/**/*.js',
+    dest: 'public/js'
+  },
+  html: {
+    src: './'
+  }
+};
 
-gulp.task('default', () => {
-  gulp.watch('sass/**/*.scss', gulp.series('styles'));
-});
-
-gulp.task('scripts', () => {
+function scripts() {
   gulp
-    .src('dev/js/**/*.js')
+    .src(paths.scripts.src)
     .pipe(sourcemaps.init())
-    .pipe(
-      babel({
-        presets: ['env']
-      })
-    )
-    // .pipe(uglify())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./js'));
-});
+    .pipe(babel({ presets: ['env'] }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write())
+    .pipe(paths.scripts.dest);
+}
 
-gulp.task('styles', () => {
-  gulp
+function reload() {
+  browserSync.reload();
+}
+
+function styles() {
+  return gulp
     .src('sass/**/*.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass())
     .on('error', sass.logError)
-    .pipe(
-      autoprefixer({
-        browsers: ['last 2 versions']
-      })
-    )
-    .pipe(gulp.dest('./css'));
-});
+    .pipe(postcss([autoprefixer(), cssnano()]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.styles.dest))
+    .pipe(browserSync.stream());
+}
+
+function watch() {
+  browserSync.init({
+    server: {
+      baseDir: './'
+    }
+  });
+  gulp.watch(paths.styles.src, styles);
+  gulp.watch(paths.html.src, reload);
+}
+
+exports.styles = styles;
+exports.watch = watch;
+exports.default = watch;
