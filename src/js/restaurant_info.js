@@ -62,10 +62,13 @@ let fetchRestaurantFromURL = callback => {
         // console.error(error)
         return
       }
-      fillRestaurantHTML()
-      callback(null, restaurant)
+      DBHelper.fetchReviewsByRestaurantId(id, (error, reviewList) => {
+        self.restaurant.reviews = reviewList
+        fillRestaurantHTML()
+        callback(null, restaurant)
+      })
     })
-  }
+  }   
 }
 
 /**
@@ -95,7 +98,7 @@ let fillRestaurantHTML = (restaurant = self.restaurant) => {
 }
 
 /**
- * Create restaurant operating hours HTML table and add it to the jpgage.
+ * Create restaurant operating hours HTML table and add it to the page.
  */
 let fillRestaurantHoursHTML = (
   operatingHours = self.restaurant.operating_hours
@@ -153,7 +156,7 @@ let createReviewHTML = review => {
   li.appendChild(name)
 
   const date = document.createElement('p')
-  date.innerHTML = review.date
+  date.innerHTML = new Date(review.updatedAt).toLocaleString()
   li.appendChild(date)
 
   const rating = document.createElement('p')

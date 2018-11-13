@@ -43,7 +43,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   let request = event.request
-  
+
   if (request.url.includes('localhost:1337')) {
     event.respondWith(
       dbPromise

@@ -195,6 +195,7 @@ header {
       justify-content: flex-start;
       header {
         border-bottom: 1px solid grey;
+        margin-top: 5px;
       }
       form div {
         padding: 10px 10px 10px 0;
@@ -209,7 +210,8 @@ header {
         }
       }
     }
-    a {
+    a, 
+    button {
       background-color: #475aff;
       border-bottom: 3px solid #eee;
       color: #fff;
@@ -295,15 +297,14 @@ header {
   margin: 0;
   padding: 0;
   display: flex;
-  flex-flow: row wrap;
-}
-#reviews-list {
+  flex-flow: column;
+  justify-content: space-between;
   article {
     background-color: #fff;
-    border: 2px solid #f3f3f3;
+    border: 2px solid #ccc;
     display: block; 
     list-style-type: none;
-    margin: 10px;
+    margin: 5px;
     overflow: hidden;
     padding: 10px;
     position: relative;
@@ -330,9 +331,8 @@ header {
 }
 /**Media Queries**/
 
-@media screen and (min-width: 600px) {
-  #restaurants-list article,
-  #reviews-list article {
+@media screen and (min-width: 640px) {
+  #restaurants-list article {
     width: 44%;
   }
   #restaurant-container > *:not(#restaurant-name) {
@@ -360,8 +360,7 @@ header {
   header h1 a {
     font-size: 1.5rem;
   }
-  #restaurants-list,
-  #reviews-list {
+  #restaurants-list {
     article {
       width: 28%;
     }

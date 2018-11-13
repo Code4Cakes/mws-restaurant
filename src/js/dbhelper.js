@@ -8,14 +8,14 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`
+    return `http://localhost:${port}`
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL).then(res => {
+    fetch(`${DBHelper.DATABASE_URL}/restaurants`).then(res => {
       if (res.status === 200) {
         // Got a success response from server!
         res.json().then((restaurants) => {
@@ -24,7 +24,28 @@ class DBHelper {
       } else {
         // Oops!. Got an error from server.
         const error = `Request failed. Returned status of ${xhr.status}`
-        callback(error, nuPll)
+        callback(error, null)
+      }
+    }).catch(error => {
+      // console.log(error)
+    })
+  }
+
+  /**
+   * Fetch all reviews.
+   */
+  static fetchReviews(callback) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews`).then(res => {
+      if (res.status === 200) {
+        // Got a success response from server!
+
+        res.json().then((reviews) => {
+          callback(null, reviews)
+        })
+      } else {
+        // Oops!. Got an error from server.
+        const error = `Request failed. Returned status of ${xhr.status}`
+        callback(error, null)
       }
     }).catch(error => {
       // console.log(error)
@@ -47,6 +68,27 @@ class DBHelper {
         } else {
           // Restaurant does not exist in the database
           callback('Restaurant does not exist', null)
+        }
+      }
+    })
+  }
+
+  /**
+   * Fetch all review by restaurant ID.
+   */
+  static fetchReviewsByRestaurantId(id, callback) {
+    // fetch all reviews with proper error handling.
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null)
+      } else {        
+        const reviewList = reviews.filter(r => r.restaurant_id == id)
+        if (reviewList) {
+          // Got the reviewList
+          callback(null, reviewList)
+        } else {
+          // Restaurant does not exist in the database
+          callback('No reviews not exist', null)
         }
       }
     })

@@ -80,11 +80,11 @@ const build = gulp.parallel(styles, scripts, images)
 
 function watch() {
 
-  browserSync.init({
-    server: {
-      baseDir: './'
-    }
-  })
+  // browserSync.init({
+  //   server: {
+  //     baseDir: './'
+  //   }
+  // })
 
   gulp.watch(paths.styles.src, styles)
   gulp.watch(paths.scripts.src, scripts)
