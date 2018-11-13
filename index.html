@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1.0" />
-    <meta name="theme-color" content="#1f7ab7" />
-    <link rel="manifest" href="/manifest.json" />
+    <meta
+      name="viewport"
+      content="initial-scale=1.0"
+    />
+    <meta
+      name="theme-color"
+      content="#1f7ab7"
+    />
+    <link
+      rel="manifest"
+      href="/manifest.json"
+    />
     <link
       rel="stylesheet"
       src="//normalize-css.googlecode.com/svn/trunk/normalize.css"
     />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="public/css/main.min.css"
+      crossorigin=""
+    />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -23,24 +37,38 @@
     <header>
       <h1><a href="/">Restaurant Reviews</a></h1>
       <nav aria-label="breadcrumbs">
-        <h2 id="breadcrumblabel" class="sr-only">You are here:</h2>
-        <ol id="breadcrumb" aria-labelledby="breadcrumblabel">
-          <li><a href="index.html" title="Home">Home</a></li>
+        <h2
+          id="breadcrumblabel"
+          class="sr-only"
+        >You are here:</h2>
+        <ol
+          id="breadcrumb"
+          aria-labelledby="breadcrumblabel"
+        >
+          <li><a
+              href="index.html"
+              title="Home"
+            >Home</a></li>
         </ol>
       </nav>
     </header>
 
     <main id="maincontent">
       <div id="map-container">
-        <div id="map" aria-label="Map of locations" role="application"></div>
+        <div
+          id="map"
+          aria-label="Map of locations"
+          role="application"
+        ></div>
       </div>
       <section>
         <div class="filter-options">
           <h2 aria-hidden="true">Filter Results</h2>
           <div class="filter-selects">
-            <label for="neighborhoods-select" class="sr-only"
-              >Filter by neighborhood</label
-            >
+            <label
+              for="neighborhoods-select"
+              class="sr-only"
+            >Filter by neighborhood</label>
             <select
               id="neighborhoods-select"
               name="neighborhoods"
@@ -48,9 +76,10 @@
             >
               <option value="all">All Neighborhoods</option>
             </select>
-            <label for="cuisines-select" class="sr-only"
-              >Filter by cuisines</label
-            >
+            <label
+              for="cuisines-select"
+              class="sr-only"
+            >Filter by cuisines</label>
             <select
               id="cuisines-select"
               name="cuisines"
@@ -63,10 +92,10 @@
         <div id="restaurants-list"></div>
       </section>
       <section id="add-restaurant">
-        <div>
+        <header>
           <h2>Something Missing?</h2>
           <h3><a href="#">Click here to add a restaurant to our list.</a></h3>
-        </div>
+        </header>
       </section>
     </main>
     <script
@@ -74,14 +103,15 @@
       integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
       crossorigin=""
     ></script>
-    <script src="js/idb.js"></script>
-    <script src="js/dbhelper.js"></script>
-    <script src="js/main.js"></script>
-    <!-- <script src="js/initSW.js"></script> -->
+    <script src="public/js/idb.min.js"></script>
+    <script src="public/js/dbhelper.min.js"></script>
+    <script src="public/js/main.min.js"></script>
+    <!-- <script src="public/js/initSW.min.js"></script> -->
 
     <footer id="footer">
       Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All
       Rights Reserved.
     </footer>
   </body>
+
 </html>
