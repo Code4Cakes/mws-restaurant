@@ -5,6 +5,7 @@ import gulp from 'gulp'
 import autoprefixer from 'autoprefixer'
 import babel from 'gulp-babel'
 import browser_sync from 'browser-sync'
+import concat from 'gulp-concat'
 import cssnano from 'cssnano'
 import del from 'del'
 import imagemin from 'gulp-imagemin'
@@ -30,7 +31,7 @@ let paths = {
     dest: 'public/img'
   },
   html: {
-    src: './*.html'
+    src: '*.html'
   }
 }
 
@@ -55,7 +56,6 @@ function scripts() {
     .pipe(uglify())
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.scripts.dest))
-    .pipe(browserSync.reload())
 }
 
 function styles() {
@@ -88,6 +88,7 @@ function watch() {
 
   gulp.watch(paths.styles.src, styles)
   gulp.watch(paths.scripts.src, scripts)
+  gulp.watch(paths.scripts.dest).on('change', browserSync.reload)
   gulp.watch(paths.images.src, images)
   gulp.watch(paths.html.src).on('change', browserSync.reload)
 }

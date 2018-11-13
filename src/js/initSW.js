@@ -6,10 +6,10 @@ let registerServiceWorker = () => {
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('public/js/sw.min.js').then(
         function() {
-          console.log('ServiceWorker registration successful')
+          // console.log('ServiceWorker registration successful')
         },
         function() {
-          console.log('ServiceWorker registration failed')
+          // console.log('ServiceWorker registration failed')
         }
       )
     })

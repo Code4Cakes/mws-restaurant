@@ -135,8 +135,10 @@ let resetRestaurants = restaurants => {
 let fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list')
   restaurants.forEach(restaurant => {
-    ul.prepend(createRestaurantHTML(restaurant))
+    ul.append(createRestaurantHTML(restaurant))
   })
+  ul.append(createForm())
+
   addMarkersToMap()
 }
 
@@ -197,6 +199,86 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
   document.querySelectorAll('img.leaflet-marker-icon').forEach(elem => {
     elem.setAttribute('role', 'link')
   })
+}
+
+let submitEntry = (form) => {}
+
+let createForm = () => {
+  const article = document.createElement('article')
+  article.setAttribute('id', 'form-tile')
+
+  //Header
+  const header = document.createElement('header')
+  const heading = document.createElement('h2')
+  heading.innerHTML = 'Missing your favorite spot?'
+  header.append(heading)
+  const subheading = document.createElement('h3')
+  subheading.innerHTML = 'Add a restaurant to our listings below.'
+  header.append(subheading)
+  article.append(header)
+
+  //Form
+  const form = document.createElement('form')
+  form.setAttribute('action', 'javascript:void  (0)')
+  form.setAttribute('onsubmit', 'submitEntry(this)')
+
+  //First Input
+  const div1 = document.createElement('div')
+
+  const label1 = document.createElement('label')
+  label1.innerHTML = 'Name of Establishment'
+  label1.setAttribute('for', 'newPlaceName')
+  div1.append(label1)
+
+  const input1 = document.createElement('input')
+  input1.setAttribute('type', 'text')
+  input1.setAttribute('name', 'newPlaceName')
+  input1.setAttribute('id', 'newPlaceName')
+  div1.append(input1)
+
+  article.append(div1)
+
+  //Second Input
+  const div2 = document.createElement('div')
+
+  const label2 = document.createElement('label')
+  label2.innerHTML = 'Rating'
+  label2.setAttribute('for', 'newPlaceRating')
+  div2.append(label2)
+
+  const input2 = document.createElement('input')
+  input2.setAttribute('type', 'number')
+  input2.setAttribute('name', 'newPlaceRating')
+  input2.setAttribute('id', 'newPlaceRating')
+  div2.append(input2)
+
+  article.append(div2)
+
+  //Last User Input
+  const div3 = document.createElement('div')
+
+  const label3 = document.createElement('label')
+  label3.innerHTML = 'Comments'
+  label3.setAttribute('for', 'newPlaceComments')
+  div3.append(label3)
+
+  const input3 = document.createElement('textarea')
+  input3.setAttribute('name', 'newPlaceComments')
+  input3.setAttribute('id', 'newPlaceComments')
+  div3.append(input3)
+
+  article.append(div3)
+
+  //submit button
+  const button = document.createElement('button')
+  button.setAttribute('type', 'submit')
+  button.innerHTML = 'Submit'
+
+  article.append(button)
+
+  article.append(form)
+
+  return article
 }
 
 /**
