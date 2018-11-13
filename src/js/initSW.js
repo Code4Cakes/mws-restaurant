@@ -4,7 +4,7 @@
 let registerServiceWorker = () => {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('public/js/sw.min.js').then(
+      navigator.serviceWorker.register('/sw.js').then(
         function() {
           // console.log('ServiceWorker registration successful')
         },

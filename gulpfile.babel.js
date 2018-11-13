@@ -88,7 +88,7 @@ function watch() {
 
   gulp.watch(paths.styles.src, styles)
   gulp.watch(paths.scripts.src, scripts)
-  gulp.watch(paths.scripts.dest).on('change', browserSync.reload)
+  // gulp.watch(paths.scripts.dest).on('change', browserSync.reload)
   gulp.watch(paths.images.src, images)
   gulp.watch(paths.html.src).on('change', browserSync.reload)
 }

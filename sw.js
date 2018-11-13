@@ -2,7 +2,7 @@ let cacheName = 'v1'
 let dbName = 'restaurandDb'
 
 if (typeof idb === 'undefined') {
-  self.importScripts('idb.min.js')
+  self.importScripts('/public/js/idb.min.js')
 }
 
 var dbPromise = idb.open(dbName, 1, upgradeDB => {
@@ -10,6 +10,7 @@ var dbPromise = idb.open(dbName, 1, upgradeDB => {
 })
 
 const urlList = [
+  '.',
   '/',
   '/index.html',
   '/restaurant.html',
@@ -42,7 +43,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   let request = event.request
-
+  
   if (request.url.includes('localhost:1337')) {
     event.respondWith(
       dbPromise
