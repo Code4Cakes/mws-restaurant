@@ -219,14 +219,14 @@ let createForm = () => {
 
   //Form
   const form = document.createElement('form')
-  form.setAttribute('action', 'javascript:void  (0)')
+  form.setAttribute('action', 'javascript:void(0)')
   form.setAttribute('onsubmit', 'submitEntry(this)')
 
   //First Input
   const div1 = document.createElement('div')
 
   const label1 = document.createElement('label')
-  label1.innerHTML = 'Name of Establishment'
+  label1.innerHTML = 'Name of Establishment:'
   label1.setAttribute('for', 'newPlaceName')
   div1.append(label1)
 
@@ -236,13 +236,13 @@ let createForm = () => {
   input1.setAttribute('id', 'newPlaceName')
   div1.append(input1)
 
-  article.append(div1)
+  form.append(div1)
 
   //Second Input
   const div2 = document.createElement('div')
 
   const label2 = document.createElement('label')
-  label2.innerHTML = 'Rating'
+  label2.innerHTML = 'Rating:'
   label2.setAttribute('for', 'newPlaceRating')
   div2.append(label2)
 
@@ -252,29 +252,30 @@ let createForm = () => {
   input2.setAttribute('id', 'newPlaceRating')
   div2.append(input2)
 
-  article.append(div2)
+  form.append(div2)
 
   //Last User Input
   const div3 = document.createElement('div')
 
   const label3 = document.createElement('label')
-  label3.innerHTML = 'Comments'
+  label3.innerHTML = 'Comments:'
   label3.setAttribute('for', 'newPlaceComments')
   div3.append(label3)
 
   const input3 = document.createElement('textarea')
   input3.setAttribute('name', 'newPlaceComments')
   input3.setAttribute('id', 'newPlaceComments')
+  input3.setAttribute('rows', '8')
   div3.append(input3)
 
-  article.append(div3)
+  form.append(div3)
 
   //submit button
   const button = document.createElement('button')
   button.setAttribute('type', 'submit')
   button.innerHTML = 'Submit'
 
-  article.append(button)
+  form.append(button)
 
   article.append(form)
 

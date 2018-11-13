@@ -190,6 +190,25 @@ header {
     margin-bottom: 10px;
     padding: 0 1rem 1rem;
     text-align: left;
+    &#form-tile {
+      min-width: 50%;
+      justify-content: flex-start;
+      header {
+        border-bottom: 1px solid grey;
+      }
+      form div {
+        padding: 10px 10px 10px 0;
+        label {
+          font-weight: bold;
+        }
+        input,
+        textarea {
+          display: block;
+          min-width: 80%;
+          margin-top: 5px;
+        }
+      }
+    }
     a {
       background-color: #475aff;
       border-bottom: 3px solid #eee;
@@ -261,6 +280,9 @@ header {
   padding: 12px;
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
+  #titleBox {
+    margin: 0 auto;
+  }
 }
 #reviews-container h2 {
   color: #0076ad;

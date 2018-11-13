@@ -120,15 +120,19 @@ let fillRestaurantHoursHTML = (
  * Create all reviews HTML and add them to the jpgage.
  */
 let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+
   const container = document.getElementById('reviews-container')
+  const titleBox = document.createElement('div')
+  titleBox.setAttribute('id', 'titleBox')
   const title = document.createElement('h2')
   title.innerHTML = 'Reviews'
-  container.appendChild(title)
+  titleBox.append(title)
+  container.prepend(titleBox)
 
   if (!reviews) {
     const noReviews = document.createElement('p')
     noReviews.innerHTML = 'No reviews yet!'
-    container.appendChild(noReviews)
+    titleBox.appendChild(noReviews)
     return
   }
   const ul = document.getElementById('reviews-list')
