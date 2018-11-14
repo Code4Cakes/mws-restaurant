@@ -145,6 +145,7 @@ let fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 let createRestaurantHTML = restaurant => {
   const art = document.createElement('article')
+  art.setAttribute('id', `restaurant-${restaurant.id}`)
 
   const image = document.createElement('img')
   image.className = 'restaurant-img'
@@ -154,7 +155,11 @@ let createRestaurantHTML = restaurant => {
 
   const header = document.createElement('header')
   const name = document.createElement('h2')
+  const star = document.createElement('span')
+  star.setAttribute('onclick', `toggleFavorite(\'restaurant-${restaurant.id}\')`)
+  star.setAttribute('class', 'star')
   name.innerHTML = restaurant.name
+  name.append(star)
   header.appendChild(name)
   art.append(header)
 
@@ -197,6 +202,18 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
   document.querySelectorAll('img.leaflet-marker-icon').forEach(elem => {
     elem.setAttribute('role', 'link')
   })
+}
+
+let toggleFavorite = (id) => {
+  let thisStar = document.querySelector(`#${id} .star`)
+  if (thisStar.className.indexOf('favorite') !== -1) {
+    thisStar.className = 'star'
+    DBHelper.sendToggleFav(id.slice(-1), 'false')
+  } else {
+    thisStar.className = 'star favorite'
+    DBHelper.sendToggleFav(id.slice(-1), 'true')
+  }
+
 }
 
 /**

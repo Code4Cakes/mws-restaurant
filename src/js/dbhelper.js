@@ -78,20 +78,21 @@ class DBHelper {
    */
   static fetchReviewsByRestaurantId(id, callback) {
     // fetch all reviews with proper error handling.
-    DBHelper.fetchReviews((error, reviews) => {
-      if (error) {
-        callback(error, null)
-      } else {        
-        const reviewList = reviews.filter(r => r.restaurant_id == id)
-        if (reviewList) {
-          // Got the reviewList
-          callback(null, reviewList)
+    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+      .then(res => {
+        if (res.status === 200) {
+          // Got a success response from server!
+          res.json().then((reviews) => {
+            callback(null, reviews)
+          })
         } else {
-          // Restaurant does not exist in the database
-          callback('No reviews not exist', null)
+          // Oops!. Got an error from server.
+          const error = `Request failed. Returned status of ${xhr.status}`
+          callback(error, null)
         }
-      }
-    })
+      }).catch(error => {
+        // console.log(error)
+      })
   }
 
   /**
@@ -231,5 +232,47 @@ class DBHelper {
     )
     marker.addTo(newMap)
     return marker
+  }
+
+  static sendToggleFav(id, add) {
+
+    let url = `http://localhost:1337/restaurants/${id}/?is_favorite=${add}`
+    let options = {
+      method: 'PUT',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    }
+    this.sendRequest(url, options)
+  }
+
+  static addReviews(review) {
+
+    let options = {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(review)
+
+    }
+
+    this.sendRequest('http://localhost:1337/reviews/', options)
+  }
+
+  static sendRequest(url, options) {
+    fetch(url, options)
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText)
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log('Added', data)
+      })
+      .catch(error => console.log('Failed', error))
   }
 }

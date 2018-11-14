@@ -62,13 +62,13 @@ let fetchRestaurantFromURL = callback => {
         // console.error(error)
         return
       }
-      DBHelper.fetchReviewsByRestaurantId(id, (error, reviewList) => {
-        self.restaurant.reviews = reviewList
+      DBHelper.fetchReviewsByRestaurantId(id, (error, reviews) => {
+        self.restaurant.reviews = reviews
         fillRestaurantHTML()
         callback(null, restaurant)
       })
     })
-  }   
+  }
 }
 
 /**
@@ -139,6 +139,7 @@ let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return
   }
   const ul = document.getElementById('reviews-list')
+  while (ul.firstChild) ul.removeChild(ul.firstChild)
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review))
   })
@@ -194,6 +195,9 @@ let getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
+/**
+ *Create form tile.
+ */
 let createForm = () => {
   const article = document.createElement('article')
 
@@ -208,7 +212,7 @@ let createForm = () => {
   //Form
   const form = document.createElement('form')
   form.setAttribute('action', 'javascript:void(0)')
-  form.setAttribute('onsubmit', 'submitEntry(this)')
+  form.setAttribute('onsubmit', 'submitReview()')
 
   //First Input
   const div1 = document.createElement('div')
@@ -222,52 +226,71 @@ let createForm = () => {
   input1.setAttribute('type', 'text')
   input1.setAttribute('name', 'reviewerName')
   input1.setAttribute('id', 'reviewerName')
+  input1.setAttribute('required', 'required')
   div1.append(input1)
 
-  article.append(div1)
+  form.append(div1)
 
   //Second Input
   const div2 = document.createElement('div')
 
   const label2 = document.createElement('label')
   label2.innerHTML = 'Rating (1-5)'
-  label2.setAttribute('for', 'newPlaceRating')
+  label2.setAttribute('for', 'newReviewRating')
   div2.append(label2)
 
   const input2 = document.createElement('input')
   input2.setAttribute('type', 'number')
   input2.setAttribute('min', '1')
   input2.setAttribute('max', '5')
-  input2.setAttribute('name', 'newPlaceRating')
-  input2.setAttribute('id', 'newPlaceRating')
+  input2.setAttribute('name', 'newReviewRating')
+  input2.setAttribute('id', 'newReviewRating')
+  input2.setAttribute('required', 'required')
   div2.append(input2)
 
-  article.append(div2)
+  form.append(div2)
 
   //Last User Input
   const div3 = document.createElement('div')
 
   const label3 = document.createElement('label')
   label3.innerHTML = 'Comments'
-  label3.setAttribute('for', 'newPlaceComments')
+  label3.setAttribute('for', 'newReviewComments')
   div3.append(label3)
 
   const input3 = document.createElement('textarea')
-  input3.setAttribute('name', 'newPlaceComments')
-  input3.setAttribute('id', 'newPlaceComments')
+  input3.setAttribute('name', 'newReviewComments')
+  input3.setAttribute('id', 'newReviewComments')
   input3.setAttribute('rows', '5')
+  input3.setAttribute('required', 'required')
   div3.append(input3)
 
-  article.append(div3)
+  form.append(div3)
 
   //submit button
   const button = document.createElement('button')
   button.setAttribute('type', 'submit')
   button.innerHTML = 'Submit'
 
-  article.append(button)
+  form.append(button)
 
   article.append(form)
 
   return article
+}
+
+let submitReview = () => {
+  let params = {
+    id: self.restaurant.reviews.length + 1,
+    restaurant_id: self.restaurant.id,
+    name: document.getElementById('reviewerName').value,
+    createdAt: new Date(),
+    rating: parseInt(document.getElementById('newReviewRating').value),
+    comments: document.getElementById('newReviewComments').value
+  }
+
+  DBHelper.addReviews(params)
+  self.restaurant.reviews.push(params)
+  fillReviewsHTML()
+
 }

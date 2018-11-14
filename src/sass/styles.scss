@@ -188,9 +188,9 @@ header {
     border: 2px solid #ccc;
     min-height: 380px;
     margin-bottom: 10px;
-    padding: 0 1rem 1rem;
+    padding: 1px 1rem 1rem;
     text-align: left;
-    a, 
+    a,
     button {
       background-color: #475aff;
       border-bottom: 3px solid #eee;
@@ -208,11 +208,28 @@ header {
       order: -1;
       background-color: #fff;
       h2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: #0076ad;
         letter-spacing: 0;
         line-height: 1.3;
         margin: 20px 0 10px;
         text-transform: uppercase;
+        span {
+          padding: 0 5px;
+          font-size: 2rem;
+          color: goldenrod;
+          cursor: pointer;
+          &.star {
+            &::before {
+              content: "\2606";
+            }
+            &.favorite::before {
+              content: "\2605";
+            }
+          }
+        }
       }
     }
   }
@@ -283,7 +300,7 @@ header {
     width: calc(50% - 34px);
     background-color: #fff;
     border: 2px solid #ccc;
-    display: block; 
+    display: block;
     list-style-type: none;
     margin: 5px;
     overflow: hidden;
@@ -300,7 +317,7 @@ header {
       width: 90%;
     }
     @media screen and (max-width: 800px) {
-      width: 100%
+      width: 100%;
     }
   }
 }
