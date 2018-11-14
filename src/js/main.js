@@ -156,8 +156,9 @@ let createRestaurantHTML = restaurant => {
   const header = document.createElement('header')
   const name = document.createElement('h2')
   const star = document.createElement('span')
+  const classString = restaurant.is_favorite === true ? 'star favorite' : 'star'
   star.setAttribute('onclick', `toggleFavorite(\'restaurant-${restaurant.id}\')`)
-  star.setAttribute('class', 'star')
+  star.setAttribute('class', classString)
   name.innerHTML = restaurant.name
   name.append(star)
   header.appendChild(name)

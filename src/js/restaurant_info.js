@@ -72,11 +72,16 @@ let fetchRestaurantFromURL = callback => {
 }
 
 /**
- * Create restaurant HTML and add it to the jpgage
+ * Create restaurant HTML and add it to the page
  */
 let fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name')
+  const star = document.createElement('span')
+  const classString = restaurant.is_favorite === true ? 'star favorite' : 'star'
+  star.setAttribute('onclick', 'toggleFavorite()')
+  star.setAttribute('class', classString)
   name.innerHTML = restaurant.name
+  name.append(star)
 
   const address = document.getElementById('restaurant-address')
   address.innerHTML = restaurant.address
@@ -277,6 +282,18 @@ let createForm = () => {
   article.append(form)
 
   return article
+}
+
+let toggleFavorite = () => {
+  let thisStar = document.querySelector('.star')
+  if (thisStar.className.indexOf('favorite') !== -1) {
+    thisStar.className = 'star'
+    DBHelper.sendToggleFav(self.restaurant.id, 'false')
+  } else {
+    thisStar.className = 'star favorite'
+    DBHelper.sendToggleFav(self.restaurant.id, 'true')
+  }
+
 }
 
 let submitReview = () => {
