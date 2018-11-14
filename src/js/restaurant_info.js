@@ -142,6 +142,7 @@ let fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review))
   })
+  ul.appendChild(createForm())
   container.appendChild(ul)
 }
 
@@ -191,4 +192,82 @@ let getParameterByName = (name, url) => {
   if (!results) return null
   if (!results[2]) return ''
   return decodeURIComponent(results[2].replace(/\+/g, ' '))
+}
+
+let createForm = () => {
+  const article = document.createElement('article')
+
+  //Header
+  const heading = document.createElement('h2')
+  heading.innerHTML = 'Missing your favorite spot?'
+  article.append(heading)
+  const subheading = document.createElement('h3')
+  subheading.innerHTML = 'Add a restaurant to our listings below.'
+  article.append(subheading)
+
+  //Form
+  const form = document.createElement('form')
+  form.setAttribute('action', 'javascript:void(0)')
+  form.setAttribute('onsubmit', 'submitEntry(this)')
+
+  //First Input
+  const div1 = document.createElement('div')
+
+  const label1 = document.createElement('label')
+  label1.innerHTML = 'Your Name'
+  label1.setAttribute('for', 'reviewerName')
+  div1.append(label1)
+
+  const input1 = document.createElement('input')
+  input1.setAttribute('type', 'text')
+  input1.setAttribute('name', 'reviewerName')
+  input1.setAttribute('id', 'reviewerName')
+  div1.append(input1)
+
+  article.append(div1)
+
+  //Second Input
+  const div2 = document.createElement('div')
+
+  const label2 = document.createElement('label')
+  label2.innerHTML = 'Rating (1-5)'
+  label2.setAttribute('for', 'newPlaceRating')
+  div2.append(label2)
+
+  const input2 = document.createElement('input')
+  input2.setAttribute('type', 'number')
+  input2.setAttribute('min', '1')
+  input2.setAttribute('max', '5')
+  input2.setAttribute('name', 'newPlaceRating')
+  input2.setAttribute('id', 'newPlaceRating')
+  div2.append(input2)
+
+  article.append(div2)
+
+  //Last User Input
+  const div3 = document.createElement('div')
+
+  const label3 = document.createElement('label')
+  label3.innerHTML = 'Comments'
+  label3.setAttribute('for', 'newPlaceComments')
+  div3.append(label3)
+
+  const input3 = document.createElement('textarea')
+  input3.setAttribute('name', 'newPlaceComments')
+  input3.setAttribute('id', 'newPlaceComments')
+  input3.setAttribute('rows', '5')
+  div3.append(input3)
+
+  article.append(div3)
+
+  //submit button
+  const button = document.createElement('button')
+  button.setAttribute('type', 'submit')
+  button.innerHTML = 'Submit'
+
+  article.append(button)
+
+  article.append(form)
+
+  return article
 }

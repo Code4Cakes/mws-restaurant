@@ -190,26 +190,6 @@ header {
     margin-bottom: 10px;
     padding: 0 1rem 1rem;
     text-align: left;
-    &#form-tile {
-      min-width: 50%;
-      justify-content: flex-start;
-      header {
-        border-bottom: 1px solid grey;
-        margin-top: 5px;
-      }
-      form div {
-        padding: 10px 10px 10px 0;
-        label {
-          font-weight: bold;
-        }
-        input,
-        textarea {
-          display: block;
-          min-width: 80%;
-          margin-top: 5px;
-        }
-      }
-    }
     a, 
     button {
       background-color: #475aff;
@@ -297,9 +277,10 @@ header {
   margin: 0;
   padding: 0;
   display: flex;
-  flex-flow: column;
+  flex-flow: row wrap;
   justify-content: space-between;
   article {
+    width: calc(50% - 34px);
     background-color: #fff;
     border: 2px solid #ccc;
     display: block; 
@@ -308,6 +289,19 @@ header {
     overflow: hidden;
     padding: 10px;
     position: relative;
+    h2 {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    textarea {
+      width: 90%;
+    }
+    @media screen and (max-width: 800px) {
+      width: 100%
+    }
   }
 }
 #reviews-list article p,
