@@ -1,10 +1,12 @@
 let cacheName = 'v1'
 let dbName = 'restaurandDb'
 
+//if idb not loaded
 if (typeof idb === 'undefined') {
   self.importScripts('/public/js/idb.min.js')
 }
 
+//db promise creation
 var dbPromise = idb.open(dbName, 1, upgradeDb => {
   switch (upgradeDb.oldVersion) {
     case 0:
@@ -14,6 +16,7 @@ var dbPromise = idb.open(dbName, 1, upgradeDb => {
   }
 })
 
+//local storage list
 const urlList = [
   '.',
   '/',
@@ -36,6 +39,7 @@ const urlList = [
   '/public/img/10.jpg'
 ]
 
+//put everything into cache when service worker installed
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(cacheName).then(cache => {
@@ -46,19 +50,26 @@ self.addEventListener('install', event => {
   )
 })
 
+//intercept fetch requests
 self.addEventListener('fetch', event => {
   let request = event.request
 
+  //if it's going to the api
   if (request.url.includes('localhost:1337')) {
-    let storeName = request.url.split('/')
-    storeName = storeName[3]
+    //reviews or restaurants for object store name
+    const splitUrl = request.url.split('/')
+    storeName = splitUrl[3]
+    //restaurant id for reviews reqests
+    const storeKey = splitUrl[4] ? parseInt(splitUrl[4].split('=').pop()) : 0
+
     event.respondWith(
-      dbPromise
-        .then(db => {
-          const tx = db.transaction('restaurants')
-          const restStore = tx.objectStore('restaurants')
-          const dbData = restStore.get(0)
-        })
+      //check for data already in local db
+      dbPromise.then(db => {
+        return db.transaction(storeName)
+          .objectStore(storeName)
+          .get(storeKey)
+      })
+        //if data extracted from local db
         .then(data => {
           if (data) {
             data = JSON.stringify(data)
@@ -67,18 +78,15 @@ self.addEventListener('fetch', event => {
             })
             return myResponse
           } else {
+            //make the request
             return fetch(request).then(response => {
               const cloneResponse = response.clone()
-
+              //store the results wit the clone 
               cloneResponse.json().then(responseData => {
                 dbPromise.then(db => {
-                  const store = db.transaction(storeName, 'readwrite')
+                  db.transaction(storeName, 'readwrite')
                     .objectStore(storeName)
-                  if (storeName === 'restaurants') {
-                    store.put(responseData, 0)
-                  } else if (storeName = 'reviews') {
-                    store.put(responseData, responseData[0].restaurant_id)
-                  }
+                    .put(responseData, storeKey)
                 })
               })
               return response
@@ -87,6 +95,7 @@ self.addEventListener('fetch', event => {
         })
     )
   } else {
+    //all other fetch requests
     event.respondWith(
       caches.match(request).then(response => {
         if (response) {
