@@ -5,8 +5,13 @@ if (typeof idb === 'undefined') {
   self.importScripts('/public/js/idb.min.js')
 }
 
-var dbPromise = idb.open(dbName, 1, upgradeDB => {
-  const objStore = upgradeDB.createObjectStore('restaurants')
+var dbPromise = idb.open(dbName, 1, upgradeDb => {
+  switch (upgradeDb.oldVersion) {
+    case 0:
+      const restaurantStore = upgradeDb.createObjectStore('restaurants')
+    case 1:
+      const reviewStore = upgradeDb.createObjectStore('reviews')
+  }
 })
 
 const urlList = [
@@ -45,6 +50,8 @@ self.addEventListener('fetch', event => {
   let request = event.request
 
   if (request.url.includes('localhost:1337')) {
+    let storeName = request.url.split('/')
+    storeName = storeName[3]
     event.respondWith(
       dbPromise
         .then(db => {
@@ -62,11 +69,16 @@ self.addEventListener('fetch', event => {
           } else {
             return fetch(request).then(response => {
               const cloneResponse = response.clone()
-              cloneResponse.json().then(restaurants => {
+
+              cloneResponse.json().then(responseData => {
                 dbPromise.then(db => {
-                  db.transaction('restaurants', 'readwrite')
-                    .objectStore('restaurants')
-                    .put(restaurants, 0)
+                  const store = db.transaction(storeName, 'readwrite')
+                    .objectStore(storeName)
+                  if (storeName === 'restaurants') {
+                    store.put(responseData, 0)
+                  } else if (storeName = 'reviews') {
+                    store.put(responseData, responseData[0].restaurant_id)
+                  }
                 })
               })
               return response
