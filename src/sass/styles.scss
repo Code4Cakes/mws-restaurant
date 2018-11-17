@@ -141,32 +141,28 @@ header {
   justify-content: space-evenly;
   min-height: 50px;
   background-color: #1f7ab7;
-  h2 {
-    color: white;
-    font-size: 1rem;
-    font-weight: normal;
-    line-height: 1;
-    margin: 10px 12px 5px;
+  .filter-selects {
+    display: flex;
+    flex-direction: column;
+    width: calc(50%-24px);
+    max-width: 600px;
+    margin: 5px 12px;
+    label {
+      color: white;
+      text-align: center;
+    }
+    select {
+      flex-grow: 1;
+      background-color: white;
+      border: 1px solid #fff;
+      height: 35px;
+      letter-spacing: 0;
+      margin: 5px 4px 5px 0;
+      padding: 0 10px;
+      min-width: 160px;
+      width: calc(100% - 10px);
+    }
   }
-  select {
-    flex-grow: 1;
-    background-color: white;
-    border: 1px solid #fff;
-    height: 35px;
-    letter-spacing: 0;
-    margin: 5px 4px 5px 0;
-    padding: 0 10px;
-    min-width: 160px;
-    width: calc(50% - 10px);
-  }
-}
-
-.filter-selects {
-  display: flex;
-  flex-flow: row wrap;
-  width: 100%;
-  max-width: 600px;
-  margin: 5px 12px;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -277,16 +273,16 @@ header {
   padding: 12px;
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
+  h2 {
+    color: #0076ad;
+    font-size: 24pt;
+    font-weight: 300;
+    letter-spacing: -1px;
+    padding-bottom: 1pt;
+  }
   #titleBox {
     margin: 0 auto;
   }
-}
-#reviews-container h2 {
-  color: #0076ad;
-  font-size: 24pt;
-  font-weight: 300;
-  letter-spacing: -1px;
-  padding-bottom: 1pt;
 }
 #reviews-list {
   margin: 0;
@@ -314,20 +310,20 @@ header {
     textarea {
       width: 90%;
     }
+    p, h3 {
+      margin: 0 0 10px;
+    }
     @media screen and (max-width: 800px) {
       width: 100%;
     }
   }
 }
-#reviews-list article p,
-#reviews-list article h3 {
-  margin: 0 0 10px;
-}
+
 #restaurant-hours td {
   color: #666;
 }
 
-/**Accessability**/
+/************ Accessability **********************/
 .sr-only {
   position: absolute;
   width: 1px;
@@ -338,7 +334,8 @@ header {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-/**Media Queries**/
+
+/*************  Media Queries *****************/
 
 @media screen and (min-width: 640px) {
   #restaurants-list article {
@@ -376,3 +373,8 @@ header {
   }
 }
 /* end 900px min */
+
+/***************Vendor Overrides*****************/
+.leaflet-container .leaflet-control-attribution {
+  background-color: #fff !important;
+}
