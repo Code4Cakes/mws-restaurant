@@ -1,0 +1,105 @@
+/* =============== Homepage Main Content =========== */
+#restaurant-container {
+  .filter-options {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    min-height: 50px;
+    background-color: #1f7ab7;
+    .filter-selects {
+      display: flex;
+      flex-direction: column;
+      width: calc(50%-24px);
+      max-width: 600px;
+      margin: 5px 12px;
+      label {
+        color: white;
+        text-align: center;
+      }
+      select {
+        flex-grow: 1;
+        background-color: white;
+        border: 1px solid #fff;
+        height: 35px;
+        letter-spacing: 0;
+        margin: 5px 4px 5px 0;
+        padding: 0 10px;
+        min-width: 160px;
+        min-width: 75%;
+      }
+    }
+  }
+
+  #restaurants-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    background-color: #f3f3f3;
+    list-style: outside none none;
+    margin: 20px 12px;
+    p {
+      margin: 0;
+    }
+    article {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-around;
+      background-color: #fff;
+      border: 2px solid #ccc;
+      min-height: 380px;
+      margin-bottom: 10px;
+      padding: 1px 1rem 1rem;
+      text-align: left;
+      a,
+      button {
+        background-color: #475aff;
+        border-bottom: 3px solid #eee;
+        color: #fff;
+        display: inline-block;
+        font-size: 1.25rem;
+        margin: 15px 0 0;
+        padding: 0 30px;
+        line-height: 48px;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      header {
+        order: -1;
+        background-color: #fff;
+        h2 {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: #0076ad;
+          letter-spacing: 0;
+          line-height: 1.3;
+          margin: 20px 0 10px;
+          text-transform: uppercase;
+        }
+        .star {
+          padding: 0 5px;
+          font-size: 2rem;
+          color: goldenrod;
+          cursor: pointer;
+          &::before {
+            content: "\2606";
+          }
+          &.favorite::before {
+            content: "\2605";
+          }
+        }
+      }
+      .restaurant-img {
+        background-color: #ccc;
+        display: block;
+        margin: 0 0 10px 0;
+        max-width: 100%;
+        min-height: 200px;
+        min-width: 100%;
+      }
+    }
+  }
+  
+}

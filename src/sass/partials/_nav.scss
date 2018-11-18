@@ -1,0 +1,43 @@
+/* ====================== Navigation ====================== */
+header {
+  background-color: #252831;
+  display: flex;
+  flex-direction: column;
+  h1 {
+    margin: auto;
+    padding: 12px;
+    a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 100;
+      letter-spacing: 10px;
+      text-transform: uppercase;
+    }
+  }
+  nav {
+    list-style: none;
+    background-color: #eee;
+    font-size: 1.25rem;
+    ol {
+      margin: 10px 0;
+      padding-left: 20px;
+      font-size: 1rem;
+    }
+    li {
+      display: inline;
+      & + li:before {
+        padding: 5px;
+        color: black;
+        content: "/\00a0";
+      }
+      a {
+        color: #006ec2;
+        text-decoration: none;
+        &:hover {
+          color: #01447e;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

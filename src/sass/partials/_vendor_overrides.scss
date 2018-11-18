@@ -1,0 +1,14 @@
+/***************  Vendor Overrides  *****************/
+
+/* ============= Leaflet =========== */
+#map-container {
+  height: 50vh;
+  #map {
+    height: 100%;
+    width: 100%;
+    background-color: #ccc;
+  }
+  .leaflet-container .leaflet-control-attribution {
+    background-color: #fff;
+  }
+}

@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+  <head profile="http://www.w3.org/2005/10/profile">
     <meta charset="utf-8">
+    <link
+      rel="icon"
+      type="image/png"
+      href="/public/img/icon.png"
+    >
+    <link
+      rel="manifest"
+      href="/manifest.json"
+    />
     <meta
       name="viewport"
       content="initial-scale=1.0"
@@ -23,7 +32,7 @@
       integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
       crossorigin=""
     />
-    <title>Restaurant Info</title>
+    <title>Restaurant Reviews - Info</title>
   </head>
 
   <body class="inside">
@@ -63,7 +72,7 @@
       </section>
       <!-- End map -->
       <!-- Beginning restaurant -->
-      <section id="restaurant-container">
+      <section id="single-restaurant-container">
         <h1
           id="restaurant-name"
           aria-label="Restaurant name"

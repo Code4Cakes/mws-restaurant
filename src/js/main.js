@@ -206,7 +206,7 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
 }
 
 let toggleFavorite = (id) => {
-  let thisStar = document.querySelector(`#${id} .star`)
+  let thisStar = document.querySelector(`#${id} .star`  )
   if (thisStar.className.indexOf('favorite') !== -1) {
     thisStar.className = 'star'
     DBHelper.sendToggleFav(id.slice(-1), 'false')

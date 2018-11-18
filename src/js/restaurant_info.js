@@ -17,6 +17,8 @@ let initMap = () => {
       // Got an error!
       // console.error(error)
     } else {
+      document.title = `Restaurant Reviews - ${restaurant.name}`
+
       self.newMap = L.map('map', {
         center: [restaurant.latlng.lat, restaurant.latlng.lng],
         zoom: 16,
@@ -207,10 +209,10 @@ let createForm = () => {
   const article = document.createElement('article')
 
   //Header
-  const heading = document.createElement('h2')
+  const heading = document.createElement('h3')
   heading.innerHTML = 'Missing your favorite spot?'
   article.append(heading)
-  const subheading = document.createElement('h3')
+  const subheading = document.createElement('h4')
   subheading.innerHTML = 'Add a restaurant to our listings below.'
   article.append(subheading)
 

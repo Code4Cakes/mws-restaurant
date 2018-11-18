@@ -18,7 +18,6 @@ var dbPromise = idb.open(dbName, 1, upgradeDb => {
 
 //local storage list
 const urlList = [
-  '.',
   '/',
   '/index.html',
   '/restaurant.html',
@@ -36,7 +35,8 @@ const urlList = [
   '/public/img/7.jpg',
   '/public/img/8.jpg',
   '/public/img/9.jpg',
-  '/public/img/10.jpg'
+  '/public/img/10.jpg',
+  '/public/img/icon.png'
 ]
 
 //put everything into cache when service worker installed
@@ -53,8 +53,8 @@ self.addEventListener('install', event => {
 //intercept fetch requests
 self.addEventListener('fetch', event => {
   let request = event.request
-
   //if it's going to the api
+
   if (request.url.includes('localhost:1337')) {
     //reviews or restaurants for object store name
     const splitUrl = request.url.split('/')
@@ -62,38 +62,45 @@ self.addEventListener('fetch', event => {
     //restaurant id for reviews reqests
     const storeKey = splitUrl[4] ? parseInt(splitUrl[4].split('=').pop()) : 0
 
-    event.respondWith(
-      //check for data already in local db
-      dbPromise.then(db => {
-        return db.transaction(storeName)
-          .objectStore(storeName)
-          .get(storeKey)
-      })
-        //if data extracted from local db
-        .then(data => {
-          if (data) {
-            data = JSON.stringify(data)
-            const myResponse = new Response(data, {
-              status: 200
-            })
-            return myResponse
-          } else {
-            //make the request
-            return fetch(request).then(response => {
-              const cloneResponse = response.clone()
-              //store the results wit the clone 
-              cloneResponse.json().then(responseData => {
-                dbPromise.then(db => {
-                  db.transaction(storeName, 'readwrite')
-                    .objectStore(storeName)
-                    .put(responseData, storeKey)
-                })
-              })
-              return response
-            })
-          }
+    if (request.method === 'GET') {
+      event.respondWith(
+        //check for data already in local db
+        dbPromise.then(db => {
+          return db.transaction(storeName)
+            .objectStore(storeName)
+            .get(storeKey)
         })
-    )
+          //if data extracted from local db
+          .then(data => {
+            if (data) {
+              data = JSON.stringify(data)
+              const myResponse = new Response(data, {
+                status: 200
+              })
+              return myResponse
+
+            } else {
+              //make the request
+              return fetch(request).then(response => {
+                const cloneResponse = response.clone()
+                //store the results wit the clone
+                cloneResponse.json().then(responseData => {
+                  dbPromise.then(db => {
+                    db.transaction(storeName, 'readwrite')
+                      .objectStore(storeName)
+                      .put(responseData, storeKey)
+                  })
+                })
+                return response
+              })
+            }
+          })
+      )
+    } else {
+      var writeAttempt = fetch(request).then(response => {
+        console.log(response)
+      })
+    }
   } else {
     //all other fetch requests
     event.respondWith(
