@@ -7,12 +7,14 @@ if (typeof idb === 'undefined') {
 }
 
 //db promise creation
-var dbPromise = idb.open(dbName, 1, upgradeDb => {
+var dbPromise = idb.open(dbName, 2, upgradeDb => {
   switch (upgradeDb.oldVersion) {
     case 0:
       const restaurantStore = upgradeDb.createObjectStore('restaurants')
     case 1:
       const reviewStore = upgradeDb.createObjectStore('reviews')
+    case 2:
+      const offlineStore = upgradeDb.createObjectStore('pending', { autoincrement: true })
   }
 })
 
@@ -61,7 +63,6 @@ self.addEventListener('fetch', event => {
     storeName = splitUrl[3]
     //restaurant id for reviews reqests
     const storeKey = splitUrl[4] ? parseInt(splitUrl[4].split('=').pop()) : 0
-
     if (request.method === 'GET') {
       event.respondWith(
         //check for data already in local db
@@ -97,9 +98,27 @@ self.addEventListener('fetch', event => {
           })
       )
     } else {
-      var writeAttempt = fetch(request).then(response => {
-        console.log(response)
+      fetch(request).then(response => {
+        if (!response.ok) {
+          dbPromise.then(db => {
+            return db.transaction('pending', 'readwrite')
+              .objectStore('pending')
+              .put('test')
+          })
+          return new Response('....', {
+            ok:true,
+            staus: 200
+          })
+        }
+        return response
       })
+      // .catch((e) => {
+      //   dbPromise.then(db => {
+      //     db.transaction('pending', 'readwrite')
+      //       .objectStore('pending')
+      //       .put('test')
+      //   })
+      // })
     }
   } else {
     //all other fetch requests
