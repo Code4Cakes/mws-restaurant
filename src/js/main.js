@@ -156,7 +156,8 @@ let createRestaurantHTML = restaurant => {
   const header = document.createElement('header')
   const name = document.createElement('h2')
   const star = document.createElement('span')
-  const classString = restaurant.is_favorite === true ? 'star favorite' : 'star'
+  const classString = restaurant.is_favorite === false || restaurant.is_favorite === 'false'  ? 'star' : 'star favorite'
+  
   star.setAttribute('onclick', `toggleFavorite(\'restaurant-${restaurant.id}\')`)
   star.setAttribute('class', classString)
   name.innerHTML = restaurant.name
@@ -206,13 +207,14 @@ let addMarkersToMap = (restaurants = self.restaurants) => {
 }
 
 let toggleFavorite = (id) => {
-  let thisStar = document.querySelector(`#${id} .star`  )
-  if (thisStar.className.indexOf('favorite') !== -1) {
+  let thisStar = document.querySelector(`#${id} .star`)
+  
+  if (thisStar.className.indexOf('favorite') > -1) {
     thisStar.className = 'star'
-    DBHelper.sendToggleFav(id.slice(-1), 'false')
-  } else {
+    DBHelper.sendToggleFav(id.slice(-1), false)
+  } else {    
     thisStar.className = 'star favorite'
-    DBHelper.sendToggleFav(id.slice(-1), 'true')
+    DBHelper.sendToggleFav(id.slice(-1), true)
   }
 
 }

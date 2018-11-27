@@ -5,6 +5,7 @@ import gulp from 'gulp'
 import autoprefixer from 'autoprefixer'
 import babel from 'gulp-babel'
 import browser_sync from 'browser-sync'
+import clean from 'gulp-clean'
 import concat from 'gulp-concat'
 import cssnano from 'cssnano'
 import del from 'del'
@@ -47,6 +48,12 @@ function images() {
     .pipe(gulp.dest(paths.images.dest))
 }
 
+function cleanScripts() {
+  return gulp
+    .src(paths.scripts.dest, { read: false, allowEmpty: true })
+    .pipe(clean())
+}
+
 function scripts() {
   return gulp
     .src(paths.scripts.src)
@@ -57,6 +64,7 @@ function scripts() {
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.scripts.dest))
 }
+
 
 function styles() {
   return gulp
@@ -79,22 +87,14 @@ function styles() {
 const build = gulp.parallel(styles, scripts, images)
 
 function watch() {
-
-  // browserSync.init({
-  //   server: {
-  //     baseDir: './'
-  //   }
-  // })
-
   gulp.watch(paths.styles.src, styles)
-  gulp.watch(paths.scripts.src, scripts)
-  // gulp.watch(paths.scripts.dest).on('change', browserSync.reload)
+  gulp.watch(paths.scripts.src, gulp.series(cleanScripts, scripts))
   gulp.watch(paths.images.src, images)
   gulp.watch(paths.html.src).on('change', browserSync.reload)
 }
 
 exports.styles = styles
-exports.scripts = scripts
+exports.scripts = gulp.series(cleanScripts, scripts)
 exports.images = images
 exports.watch = watch
 

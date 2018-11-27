@@ -235,28 +235,31 @@ class DBHelper {
   }
 
   static sendToggleFav(id, add) {
-
+    let favHeaders = new Headers()
+    favHeaders.append('Content-Type', 'application/json')
+    console.log(add);
+    
     let url = `http://localhost:1337/restaurants/${id}/?is_favorite=${add}`
     let options = {
       method: 'PUT',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
-      headers: new Headers({ 'Content-Type': 'application/json' })
     }
     this.sendRequest(url, options)
   }
 
   static addReviews(review) {
+    let reviewHeaders = new Headers()
+    reviewHeaders.append('Content-Type', 'application/json')
 
     let options = {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      headers: reviewHeaders,
       body: JSON.stringify(review)
-
     }
 
     this.sendRequest('http://localhost:1337/reviews/', options)
@@ -271,7 +274,7 @@ class DBHelper {
         return response.json()
       })
       .then((data) => {
-        console.log('Added', data)
+        console.log('Sent', data)
       })
       .catch(error => console.log('Failed', error))
   }
