@@ -78,18 +78,6 @@
           margin: 20px 0 10px;
           text-transform: uppercase;
         }
-        .star {
-          padding: 0 5px;
-          font-size: 2rem;
-          color: goldenrod;
-          cursor: pointer;
-          &::before {
-            content: "\2606";
-          }
-          &.favorite::before {
-            content: "\2605";
-          }
-        }
       }
       .restaurant-img {
         background-color: #ccc;

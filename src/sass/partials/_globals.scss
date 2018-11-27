@@ -1,5 +1,4 @@
 /* ====================== Globals ====================== */
-
 body,
 td,
 th,
@@ -77,6 +76,19 @@ a,
 button {
   min-width: 48px !important;
   min-height: 48px !important;
+}
+
+.star {
+  padding: 0 5px;
+  font-size: 2rem;
+  color: goldenrod;
+  cursor: pointer;
+  &::before {
+    content: "\2606";
+  }
+  &.favorite::before {
+    content: "\2605";
+  }
 }
 
 /************ Accessibility **********************/

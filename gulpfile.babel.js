@@ -87,7 +87,7 @@ function styles() {
 const build = gulp.parallel(styles, scripts, images)
 
 function watch() {
-  gulp.watch(paths.styles.src, styles)
+  gulp.watch('src/sass/**/*.scss', styles)
   gulp.watch(paths.scripts.src, gulp.series(cleanScripts, scripts))
   gulp.watch(paths.images.src, images)
   gulp.watch(paths.html.src).on('change', browserSync.reload)

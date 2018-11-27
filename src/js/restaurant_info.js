@@ -79,7 +79,9 @@ let fetchRestaurantFromURL = callback => {
 let fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name')
   const star = document.createElement('span')
-  const classString = restaurant.is_favorite === true ? 'star favorite' : 'star'
+  
+  const classString = restaurant.is_favorite === false || restaurant.is_favorite === 'false'  ? 'star' : 'star favorite'
+
   star.setAttribute('onclick', 'toggleFavorite()')
   star.setAttribute('class', classString)
   name.innerHTML = restaurant.name

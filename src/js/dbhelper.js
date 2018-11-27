@@ -237,8 +237,7 @@ class DBHelper {
   static sendToggleFav(id, add) {
     let favHeaders = new Headers()
     favHeaders.append('Content-Type', 'application/json')
-    console.log(add);
-    
+
     let url = `http://localhost:1337/restaurants/${id}/?is_favorite=${add}`
     let options = {
       method: 'PUT',

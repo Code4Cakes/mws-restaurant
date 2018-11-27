@@ -41,13 +41,13 @@ const urlList = [
 
 //put everything into cache when service worker installed
 self.addEventListener('install', event => {
-  // event.waitUntil(
-  //   caches.open(cacheName).then(cache => {
-  //     cache.addAll(urlList, {
-  //       mode: 'no-cors'
-  //     })
-  //   })
-  // )
+  event.waitUntil(
+    caches.open(cacheName).then(cache => {
+      cache.addAll(urlList, {
+        mode: 'no-cors'
+      })
+    })
+  )
 })
 
 //intercept fetch requests
@@ -180,20 +180,20 @@ self.addEventListener('fetch', event => {
       )
     }
   } else {
-    //all other fetch requests
-    // event.respondWith(
-    //   caches.match(request).then(response => {
-    //     if (response) {
-    //       return response
-    //     }
-    //     return fetch(request).then(response => {
-    //       const cloneResponse = response.clone()
-    //       caches
-    //         .open(cacheName)
-    //         .then(cache => cache.put(request, cloneResponse))
-    //       return response
-    //     })
-    //   })
-    // )
+    // all other fetch requests
+    event.respondWith(
+      caches.match(request).then(response => {
+        if (response) {
+          return response
+        }
+        return fetch(request).then(response => {
+          const cloneResponse = response.clone()
+          caches
+            .open(cacheName)
+            .then(cache => cache.put(request, cloneResponse))
+          return response
+        })
+      })
+    )
   }
 })
