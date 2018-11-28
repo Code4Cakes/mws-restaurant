@@ -1,20 +1,10 @@
+
 let cacheName = 'v1'
-let dbName = 'restaurandDb'
+
+if (typeof DBHelper === 'undefined') self.importScripts('public/js/dbhelper.min.js')
 
 //if idb not loaded
-if (typeof idb === 'undefined') {
-  self.importScripts('/public/js/idb.min.js')
-}
-
-//db promise creation
-var dbPromise = idb.open(dbName, 3, upgradeDb => {
-  switch (upgradeDb.oldVersion) {
-    case 0:
-      const restaurantStore = upgradeDb.createObjectStore('restaurants')
-    case 1:
-      const reviewStore = upgradeDb.createObjectStore('reviews')
-  }
-})
+if (typeof idb === 'undefined') self.importScripts('/public/js/idb.min.js')
 
 //local storage list
 const urlList = [
@@ -54,33 +44,66 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   let request = event.request
   //if it's going to the api
-
-  if (request.url.includes('localhost:1337')) {
-    //reviews or restaurants for object store name
-    const splitUrl = request.url.split('/')
-    const storeName = splitUrl[3]
-
+  if (request.url.includes(DBHelper.DATABASE_URL)) {
     //Requesting info, try to pull, get from browser if fail
     if (request.method === 'GET') {
-      const storeKey = splitUrl[4] ? parseInt(splitUrl[4].split('=').pop()) : 0
+      let url = request.referrer
+
       event.respondWith(
         fetch(request).then(response => {
           const cloneResponse = response.clone()
-          //store the results wit the clone
           cloneResponse.json().then(responseData => {
-            dbPromise.then(db => {
-              db.transaction(storeName, 'readwrite')
-                .objectStore(storeName)
-                .put(responseData, storeKey)
-            })
+            if (cloneResponse.url.indexOf('reviews') === -1) {
+              //compare and store restaurant data
+              DBHelper.fetchLocalDb('restaurants', 0)
+                .then(currentStorage => {
+                  if (currentStorage) {
+                    const toUpdate = currentStorage.filter(review => {
+                      return responseData.map(({ is_favorite }) => is_favorite) !== review.is_favorite
+                    })
+                    if (toUpdate.length) {
+                      response = new Response(JSON.stringify(currentStorage), {
+                        status: 200
+                      })
+                      toUpdate.forEach(restaurant => {
+                        DBHelper.sendToggleFav(restaurant.id, restaurant.is_favorite)
+                      })
+                    } else {
+                      DBHelper.putLocalDb(responseData, 'restaurants', 0)
+                    }
+                  } else {
+                    DBHelper.putLocalDb(responseData, 'restaurants', 0)
+                  }
+                })
+            } else {
+              //compare and store review data
+              DBHelper.fetchLocalDb('reviews', parseInt(url.split('=').pop()))
+                .then(currentStorage => {
+                  if (currentStorage.length > responseData.length) {
+                    response = new Response(JSON.stringify(currentStorage), {
+                      status: 200
+                    })
+                    const toUpdate = currentStorage.filter(review => {
+                      return responseData.map(({ id }) => id).indexOf(review.id) === -1
+                    })
+                    toUpdate.forEach(review => {
+                      DBHelper.addReview(review)
+                    })
+                  } else {
+                    DBHelper.putLocalDb(responseData, 'reviews', responseData[0].restaurant_id)
+                  }
+                })
+            }
           })
           return response
         })
           .catch(() => {
-            return dbPromise.then(db => {
-              return db.transaction(storeName)
-                .objectStore(storeName)
-                .get(storeKey)
+            return DBHelper.dbPromise.then(db => {
+              if (url.indexOf('restaurant.html') === -1) {
+                return DBHelper.fetchLocalDb('restaurants', 0)
+              } else {
+                return DBHelper.fetchLocalDb('reviews', url.split('=').pop())
+              }
             })
               .then(data => {
                 if (data) {
@@ -92,90 +115,6 @@ self.addEventListener('fetch', event => {
                   return myResponse
                 }
               })
-          })
-      )
-
-    } else {
-
-      let splitUrl = request.referrer.indexOf('id=') ? request.referrer.split('=') : request.url.split('/')
-      let restaurantId = splitUrl[4] ? splitUrl[4] - 1 : undefined
-      let storeKey = splitUrl[4] ? 0 : splitUrl[1]
-      let cloneRequest = request.clone()
-
-      event.respondWith(
-        fetch(request).then(response => {
-          let cloneResponse = response.clone()
-          cloneResponse.json().then(data => {
-            if (data.is_favorite) {
-              let id = data.id
-              dbPromise.then(db => {
-                return db.transaction('restaurants')
-                  .objectStore('restaurants')
-                  .get(0)
-              })
-                .then(data => {
-                  data[id].is_favorite = !data[id].is_favorite
-                  dbPromise.then(db => {
-                    db.transaction('restaurants', 'readwrite')
-                      .objectStore('restaurants')
-                      .put(data, 0)
-                  })
-
-                })
-            } else {
-              let review = data
-              dbPromise.then(db => {
-                return db.transaction('reviews')
-                  .objectStore('reviews')
-                  .get(review.restaurant_id)
-              })
-                .then(data => {
-                  data.push(review)
-                  return dbPromise.then(db => {
-                    db.transaction('reviews', 'readwrite')
-                      .objectStore('reviews')
-                      .put(data, review.restaurant_id)
-                  })
-                })
-            }
-          })
-          return response
-        })
-          .catch(() => {
-            cloneRequest.json().then(data => {
-              if (data.is_favorite) {
-                let id = data.id
-                dbPromise.then(db => {
-                  return db.transaction('restaurants')
-                    .objectStore('restaurants')
-                    .get(0)
-                })
-                  .then(data => {
-                    data[id].is_favorite = !data[id].is_favorite
-                    dbPromise.then(db => {
-                      db.transaction('restaurants', 'readwrite')
-                        .objectStore('restaurants')
-                        .put(data, 0)
-                    })
-
-                  })
-              } else {
-                let review = data
-                dbPromise.then(db => {
-                  return db.transaction('reviews')
-                    .objectStore('reviews')
-                    .get(review.restaurant_id)
-                })
-                  .then(data => {
-                    data.push(review)
-                    return dbPromise.then(db => {
-                      db.transaction('reviews', 'readwrite')
-                        .objectStore('reviews')
-                        .put(data, review.restaurant_id)
-                    })
-                  })
-              }
-            })
           })
       )
     }

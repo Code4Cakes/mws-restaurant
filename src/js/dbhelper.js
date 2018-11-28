@@ -11,6 +11,17 @@ class DBHelper {
     return `http://localhost:${port}`
   }
 
+  static get dbPromise() {
+    return idb.open('restaurandDb', 3, upgradeDb => {
+      switch (upgradeDb.oldVersion) {
+        case 0:
+          const restaurantStore = upgradeDb.createObjectStore('restaurants')
+        case 1:
+          const reviewStore = upgradeDb.createObjectStore('reviews')
+      }
+    })
+  }
+
   /**
    * Fetch all restaurants.
    */
@@ -234,47 +245,114 @@ class DBHelper {
     return marker
   }
 
+  /*
+  * Set a restaurant as favorite or not
+  */
   static sendToggleFav(id, add) {
-    let favHeaders = new Headers()
-    favHeaders.append('Content-Type', 'application/json')
-
-    let url = `http://localhost:1337/restaurants/${id}/?is_favorite=${add}`
-    let options = {
-      method: 'PUT',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
+    if (navigator.onLine) {
+      fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${add}`, {
+        method: 'PUT',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: new Headers({ 'Content-Type': 'application/json' })
+      })
+        .then(response => {
+          return this.setFavoriteLocalDb({
+            id: id,
+            is_favorite: add
+          })
+        })
+        .catch(() => {
+          // console.warn('Your attempt to contact the server failed. Storing locally and will try again later.')
+          this.setFavoriteLocalDb({
+            id: id - 1,
+            is_favorite: add
+          })
+        })
+    } else {
+      // console.info('Your browser is currently offline. Storing locally and will try again later.')
+      console.log(id)
+      console.log(add)
+      this.setFavoriteLocalDb({
+        id: id,
+        is_favorite: add
+      })
     }
-    this.sendRequest(url, options)
   }
 
-  static addReviews(review) {
-    let reviewHeaders = new Headers()
-    reviewHeaders.append('Content-Type', 'application/json')
-
-    let options = {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: reviewHeaders,
-      body: JSON.stringify(review)
-    }
-
-    this.sendRequest('http://localhost:1337/reviews/', options)
+  /*
+  * get from local db
+  */
+  static fetchLocalDb(store, key) {
+    return this.dbPromise
+      .then(db => {
+        return db.transaction(store)
+          .objectStore(store)
+          .get(key)
+      })
   }
 
-  static sendRequest(url, options) {
-    fetch(url, options)
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response.statusText)
-        }
-        return response.json()
+  /*
+  * Write list to local DB
+  */
+  static putLocalDb(data, store, key) {
+    this.dbPromise
+      .then(db => {
+        db.transaction(store, 'readwrite')
+          .objectStore(store)
+          .put(data, key)
       })
-      .then((data) => {
-        console.log('Sent', data)
+      .catch(e => {
+        console.log(e)
       })
-      .catch(error => console.log('Failed', error))
+  }
+
+  /*
+  *Handle changing restaurant as favoirite in local DB
+  */
+  static setFavoriteLocalDb(restaurant) {
+    // store whole response or just change attr if that's it
+    const jsonIndex = restaurant.id - 1
+    this.fetchLocalDb('restaurants', 0)
+      .then(restaurantList => {
+        restaurantList[jsonIndex].is_favorite = restaurant.is_favorite
+        this.putLocalDb(restaurantList, 'restaurants', 0)
+      })
+  }
+
+  /*
+  * Add a review
+  */
+  static addReview(review) {
+    if (navigator.onLine) {
+      fetch('http://localhost:1337/reviews/', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(review)
+      })
+        .then(response => {
+          // console.warn('Your attempt to contact the server failed. Storing locally and will try again later.')
+          this.storeReviewLocalDb(response)
+        })
+        .catch(() => {
+          this.storeReviewLocalDb(review)
+        })
+    } else {
+      this.storeReviewLocalDb(review)
+      // console.info('Your browser is currently offline. Storing locally and will try again later.')
+    }
+  }
+
+  static storeReviewLocalDb(review) {
+    const id = review.restaurant_id
+    this.fetchLocalDb('reviews', id)
+      .then(reviewList => {
+        reviewList.push(review)
+        this.putLocalDb(reviewList, 'reviews', id)
+      })
   }
 }

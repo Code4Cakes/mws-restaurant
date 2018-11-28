@@ -65,7 +65,6 @@ function scripts() {
     .pipe(gulp.dest(paths.scripts.dest))
 }
 
-
 function styles() {
   return gulp
     .src(paths.styles.src)

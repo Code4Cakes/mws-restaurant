@@ -79,7 +79,7 @@ let fetchRestaurantFromURL = callback => {
 let fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name')
   const star = document.createElement('span')
-  
+
   const classString = restaurant.is_favorite === false || restaurant.is_favorite === 'false'  ? 'star' : 'star favorite'
 
   star.setAttribute('onclick', 'toggleFavorite()')
@@ -305,12 +305,12 @@ let submitReview = () => {
     id: self.restaurant.reviews.length + 1,
     restaurant_id: self.restaurant.id,
     name: document.getElementById('reviewerName').value,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     rating: parseInt(document.getElementById('newReviewRating').value),
     comments: document.getElementById('newReviewComments').value
   }
 
-  DBHelper.addReviews(params)
+  DBHelper.addReview(params)
   self.restaurant.reviews.push(params)
   fillReviewsHTML()
 
