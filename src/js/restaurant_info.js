@@ -212,10 +212,10 @@ let createForm = () => {
 
   //Header
   const heading = document.createElement('h3')
-  heading.innerHTML = 'Missing your favorite spot?'
+  heading.innerHTML = 'Have an opinion?'
   article.append(heading)
   const subheading = document.createElement('h4')
-  subheading.innerHTML = 'Add a restaurant to our listings below.'
+  subheading.innerHTML = 'Let us know what you think.'
   article.append(subheading)
 
   //Form
@@ -306,6 +306,7 @@ let submitReview = () => {
     restaurant_id: self.restaurant.id,
     name: document.getElementById('reviewerName').value,
     createdAt: Date.now(),
+    updatedAt: Date.now(),
     rating: parseInt(document.getElementById('newReviewRating').value),
     comments: document.getElementById('newReviewComments').value
   }

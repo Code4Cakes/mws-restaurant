@@ -53,14 +53,23 @@ self.addEventListener('fetch', event => {
         fetch(request).then(response => {
           const cloneResponse = response.clone()
           cloneResponse.json().then(responseData => {
+
+            //if it's a fetch for the restaurant list
             if (cloneResponse.url.indexOf('reviews') === -1) {
+
               //compare and store restaurant data
               DBHelper.fetchLocalDb('restaurants', 0)
                 .then(currentStorage => {
+
                   if (currentStorage) {
                     const toUpdate = currentStorage.filter(review => {
-                      return responseData.map(({ is_favorite }) => is_favorite) !== review.is_favorite
+                      const index = review.id - 1
+                      return (
+                        review.is_favorite.toString() !=
+                        currentStorage[index].is_favorite.toString()
+                      )
                     })
+
                     if (toUpdate.length) {
                       response = new Response(JSON.stringify(currentStorage), {
                         status: 200
@@ -75,11 +84,12 @@ self.addEventListener('fetch', event => {
                     DBHelper.putLocalDb(responseData, 'restaurants', 0)
                   }
                 })
-            } else {
+
+            } else { //it's a fetch for the reviews list
               //compare and store review data
               DBHelper.fetchLocalDb('reviews', parseInt(url.split('=').pop()))
                 .then(currentStorage => {
-                  if (currentStorage.length > responseData.length) {
+                  if (currentStorage && currentStorage.length > responseData.length) {
                     response = new Response(JSON.stringify(currentStorage), {
                       status: 200
                     })
@@ -111,7 +121,7 @@ self.addEventListener('fetch', event => {
                   const myResponse = new Response(data, {
                     status: 200
                   })
-                  console.info('There was an error connecting to the server, showing last retrieved results')
+                  // console.info('There was an error connecting to the server, showing last retrieved results')
                   return myResponse
                 }
               })

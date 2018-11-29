@@ -249,6 +249,7 @@ class DBHelper {
   * Set a restaurant as favorite or not
   */
   static sendToggleFav(id, add) {
+
     if (navigator.onLine) {
       fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${add}`, {
         method: 'PUT',
@@ -258,67 +259,24 @@ class DBHelper {
         headers: new Headers({ 'Content-Type': 'application/json' })
       })
         .then(response => {
-          return this.setFavoriteLocalDb({
-            id: id,
+          this.setFavoriteLocalDb({
+            id: (id - 1),
             is_favorite: add
           })
         })
         .catch(() => {
-          // console.warn('Your attempt to contact the server failed. Storing locally and will try again later.')
           this.setFavoriteLocalDb({
-            id: id - 1,
+            id: (id - 1),
             is_favorite: add
           })
         })
     } else {
       // console.info('Your browser is currently offline. Storing locally and will try again later.')
-      console.log(id)
-      console.log(add)
       this.setFavoriteLocalDb({
-        id: id,
+        id: (id - 1),
         is_favorite: add
       })
     }
-  }
-
-  /*
-  * get from local db
-  */
-  static fetchLocalDb(store, key) {
-    return this.dbPromise
-      .then(db => {
-        return db.transaction(store)
-          .objectStore(store)
-          .get(key)
-      })
-  }
-
-  /*
-  * Write list to local DB
-  */
-  static putLocalDb(data, store, key) {
-    this.dbPromise
-      .then(db => {
-        db.transaction(store, 'readwrite')
-          .objectStore(store)
-          .put(data, key)
-      })
-      .catch(e => {
-        console.log(e)
-      })
-  }
-
-  /*
-  *Handle changing restaurant as favoirite in local DB
-  */
-  static setFavoriteLocalDb(restaurant) {
-    // store whole response or just change attr if that's it
-    const jsonIndex = restaurant.id - 1
-    this.fetchLocalDb('restaurants', 0)
-      .then(restaurantList => {
-        restaurantList[jsonIndex].is_favorite = restaurant.is_favorite
-        this.putLocalDb(restaurantList, 'restaurants', 0)
-      })
   }
 
   /*
@@ -335,10 +293,10 @@ class DBHelper {
         body: JSON.stringify(review)
       })
         .then(response => {
-          // console.warn('Your attempt to contact the server failed. Storing locally and will try again later.')
-          this.storeReviewLocalDb(response)
+          this.storeReviewLocalDb(review)
         })
         .catch(() => {
+          // console.warn('Your attempt to contact the server failed. Storing locally and will try again later.')
           this.storeReviewLocalDb(review)
         })
     } else {
@@ -347,12 +305,54 @@ class DBHelper {
     }
   }
 
+  /*
+  * handle the get and put for new reviews
+  */
   static storeReviewLocalDb(review) {
     const id = review.restaurant_id
+
     this.fetchLocalDb('reviews', id)
       .then(reviewList => {
         reviewList.push(review)
         this.putLocalDb(reviewList, 'reviews', id)
       })
   }
+
+  /*
+  *Handle changing restaurant as favoirite in local DB
+  */
+  static setFavoriteLocalDb(restaurant) {
+    // store whole response or just change attr if that's it
+    const jsonIndex = restaurant.id
+    this.fetchLocalDb('restaurants', 0)
+      .then(restaurantList => {
+        restaurantList[jsonIndex].is_favorite = restaurant.is_favorite
+        this.putLocalDb(restaurantList, 'restaurants', 0)
+      })
+  }
+
+  /*
+  * get from local db
+  */
+  static fetchLocalDb(store, key) {
+    return this.dbPromise
+      .then(db => {
+        return db.transaction(store)
+          .objectStore(store)
+          .get(key)
+      })
+  }
+
+  /*
+* Write list to local DB
+*/
+  static putLocalDb(data, store, key) {
+    this.dbPromise
+      .then(db => {
+        db.transaction(store, 'readwrite')
+          .objectStore(store)
+          .put(data, key)
+      })
+  }
+
 }
